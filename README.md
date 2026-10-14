@@ -1,22 +1,44 @@
 # MetaphorTalk: Exploring Metaphor in Human–LLM Dialog
 
-This repository provides the code, scripts, annotation prompts, and evaluation pipelines supporting the paper:
+This repository provides the code, annotation prompts, documentation,
+and evaluation scripts supporting the paper:
 
-> **A Matter of Interpretation: Exploring Metaphor in Human–LLM Dialog**  
-> *Under Review (ACL)*
+**A Matter of Interpretation: Exploring Metaphor in Human–LLM Dialog**  
+*Under Review*
 
-The repository contains the complete experimental pipeline: from raw ShareChat corpus filtering and window sampling to LLM annotation, inter-annotator agreement (IAA), adjudication, statistical benchmarking, and metaphor uptake analysis.
+The repository documents the computational and annotation workflow,
+including corpus filtering and sampling, LLM-assisted annotation,
+inter-annotator agreement, adjudication, statistical evaluation, and
+metaphor uptake analysis.
+
+The code is openly available. Access to the underlying annotated
+conversation data is handled separately because the source conversations
+may remain identifiable through text-based linkage.
 
 ---
 
-## Data Access & Reproducibility Notice
+## Data Access and Reproducibility
 
-To protect user privacy and comply with data protection standards, conversational texts containing user interactions are **not hosted directly in this open GitHub repository**. Re-identification and linkage tests demonstrated that full-text and phrase queries against public raw conversational dumps can reveal original web share URLs.
+The repository does not contain the original conversational texts or
+the full annotated gold standard. Although identifying information was
+manually reviewed and removed or generalized, some utterances remain
+searchable in the publicly available source corpus. The resulting
+linkage risk means that de-identification cannot be assumed to eliminate
+all privacy risks.
 
-### Accessing the Full Annotated Gold Standard
-The adjudicated evaluation corpus (*779 turns, 1,184 metaphor spans*) will be made available to credentialed researchers under an **Academic Data Use Agreement (DUA)** with a strict re-identification and linkage ban:
-* **Repository / Gated Access:** Request access via our [Zenodo / Hugging Face Gated Dataset Page](https://huggingface.co/datasets/An0nymia/MetaphorTalk) *(Placeholder link during double-blind review)*.
-* **Minimal Mock Data Included:** To test all scripts immediately without waiting for DUA access approval, this repository includes a synthetic mock dataset in [`data/mock/`](data/mock/).
+The annotated gold standard comprises 779 turns and 1,184 metaphor
+spans. Any sharing of the full dataset is subject to institutional
+data-protection review and an approved access procedure. If access is
+authorized, it will be restricted to approved research purposes under
+a data use agreement. No unrestricted public download is promised.
+
+A small synthetic dataset is provided in `data/mock/` to demonstrate
+selected scripts. It is intended for software testing, not for
+reproducing the paper's empirical findings.
+
+The code and documentation allow inspection and reuse of the methods.
+Reproducing analyses that depend on the annotated gold standard requires
+authorized access to the corresponding data.
 
 ---
 
@@ -25,30 +47,30 @@ The adjudicated evaluation corpus (*779 turns, 1,184 metaphor spans*) will be ma
 ```text
 MetaphorTalk/
 ├── notebooks/
-│   └── 01_corpus_filtering_and_sampling.ipynb   # Raw ShareChat filtering, turn cutoffs (10-100), regex pruning, and 6-8 turn window sampling (§ 3.2, § 4)
+│   └── corpus_filtering_and_sampling.ipynb   # ShareChat filtering, length filtering, regex pruning, and window sampling
 ├── scripts/
-│   ├── run_llm_annotation.py                    # Structured Pydantic LLM annotation runner (KISSKI SAIA / OpenAI / vLLM API) (§ 4.3, App. B.2)
-│   ├── corpus_statistics.py                     # Metaphor density, speaker distributions, and sampling representativeness (Table 1)
-│   ├── metaphor_uptake.py                       # Metaphor adoption / uptake analysis across speaker directions (Table 4)
-│   ├── benchmark_llms.py                        # LLM vs. Gold evaluation across Turn, Span, Lexicalization, and Functions (Table 3)
-│   ├── compute_human_iaa.py                     # Human Inter-Annotator Agreement: Fleiss' Kappa, character-level F1, Hungarian alignment (Table 2)
-│   ├── prepare_adjudication_sheet.py           # Prepares conflict resolution table & meeting agenda dossier from multi-annotator files (§ 5.1)
-│   ├── compile_gold_standard.py                 # Compiles completed adjudication decisions into final Gold Standard format (§ 5.1)
-│   └── function_confusion.py                    # 8x8 communicative function confusion matrix & case study extraction (Table 5, App. C)
+│   ├── run_llm_annotation.py                 # Structured Pydantic LLM annotation runner via API
+│   ├── corpus_statistics.py                  # Metaphor density, speaker distributions, and descriptive statistics
+│   ├── metaphor_uptake.py                    # Metaphor adoption and uptake analysis across dialogue turns
+│   ├── benchmark_llms.py                     # Evaluation across turn identification, spans, conventionality, and functions
+│   ├── compute_human_iaa.py                  # Human agreement metrics: Fleiss' Kappa, character-level F1, Hungarian alignment
+│   ├── prepare_adjudication_sheet.py        # Prepares conflict resolution table and meeting agenda dossier
+│   ├── compile_gold_standard.py              # Compiles completed adjudication decisions into gold standard format
+│   └── function_confusion.py                 # Communicative function confusion matrix and case study extraction
 ├── data/
-│   └── mock/                                    # Minimal synthetic dialogue data for testing scripts locally
+│   └── mock/                                 # Minimal synthetic dialogue data for software testing
 │       ├── mock_turns.csv
 │       └── mock_spans.csv
-├── requirements.txt                             # Python package dependencies
+├── requirements.txt                          # Python package dependencies
 └── README.md
 ```
 
 ---
 
-## Quickstart & Installation
+## Installation and Setup
 
-### 1. Environment Setup
-Clone the repository and install dependencies:
+Clone the repository and install the dependencies:
+
 ```bash
 git clone https://github.com/An0nymia/MetaphorTalk.git
 cd MetaphorTalk
@@ -56,20 +78,29 @@ pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
 
-### 2. Testing Scripts on Mock Data
-To verify that the code runs without errors on your machine, test the uptake analysis pipeline on the provided mock data:
+---
+
+## Software Verification with Synthetic Mock Data
+
+A minimal synthetic dataset is provided in `data/mock/` to verify that the scripts execute as intended:
+
 ```bash
-python scripts/metaphor_uptake.py --input data/mock/mock_spans.csv --out-dir outputs/
+python scripts/metaphor_uptake.py \
+  --input data/mock/mock_spans.csv \
+  --out-dir outputs/
 ```
+
+This synthetic data demonstrates the execution mechanics of the pipeline and does not reflect empirical distributions reported in the paper.
 
 ---
 
-## Experiments & Analyses on the Released Gold Corpus
+## Empirical Evaluation on the Annotated Gold Standard
 
-Once you have obtained the approved de-identified gold dataset release files (`gold_standard_release_turns.csv`, `gold_standard_release_spans.csv`, `gold_standard_release.json`), place them in the `data/` directory.
+Reproducing the empirical analyses described in the paper requires access to the corresponding annotated data files (`gold_standard_release_turns.csv`, `gold_standard_release_spans.csv`, `gold_standard_release.json`). Once authorized access is obtained, place these files in the `data/` directory.
 
-### 1. Corpus Statistics & Speaker Distributions (Table 1)
-Computes turn counts, word lengths, metaphor counts, normalized density (spans / 100 words), and User vs. LLM distributions:
+### 1. Corpus Statistics and Speaker Distributions
+Computes turn counts, word lengths, metaphor counts, normalized density (spans per 100 words), and User versus LLM speaker distributions:
+
 ```bash
 python scripts/corpus_statistics.py \
   --turns data/gold_standard_release_turns.csv \
@@ -77,60 +108,64 @@ python scripts/corpus_statistics.py \
   --out outputs/corpus_statistics_summary.csv
 ```
 
-### 2. Metaphorical Uptake Dynamics (Table 4)
-Analyzes metaphor adoption, repetition, and extension across conversation turns (Human → LLM vs. LLM → Human):
+### 2. Metaphorical Uptake Dynamics
+Analyzes metaphor adoption, repetition, and extension across conversational turns (Human-to-LLM versus LLM-to-Human):
+
 ```bash
 python scripts/metaphor_uptake.py \
   --input data/gold_standard_release_spans.csv \
   --out-dir outputs/
 ```
 
-### 3. LLM Annotation & Model Benchmarking (Table 3)
-To benchmark an LLM against the human Gold standard:
+### 3. LLM Annotation and Model Benchmarking
+To annotate turns using a language model and evaluate the resulting predictions against the gold standard:
 
-1. **Run Structured LLM Annotation** (§ 4.3, App. B.2):
+1. **Run Structured LLM Annotation**:
 ```bash
 python scripts/run_llm_annotation.py \
   --input data/gold_standard_release_turns.csv \
-  --output outputs/my_model_predictions.json \
+  --output outputs/model_predictions.json \
   --model-name "meta-llama/Llama-3.3-70B-Instruct" \
   --api-base "https://api.example.com/v1" \
   --api-key "$API_KEY"
 ```
 
-2. **Evaluate Model against Gold Standard**:
+2. **Evaluate Model Predictions against the Gold Standard**:
 ```bash
 python scripts/benchmark_llms.py \
   --gold data/gold_standard_release.json \
-  --predictions outputs/my_model_predictions.json \
+  --predictions outputs/model_predictions.json \
   --model-name "Llama-3.3-70B" \
   --out-csv outputs/benchmark_results.csv
 ```
 
 ---
 
-## Multi-Annotator Agreement & Adjudication Pipeline
+## Annotation and Adjudication Workflow
 
-The repository also includes the full methodological pipeline developed for multi-annotator agreement, span clustering, and expert adjudication. Researchers conducting their own annotation studies can use these tools:
+The repository also includes the scripts implementing the multi-annotator agreement and adjudication workflow. These scripts allow inspection of the annotation methodology and can be applied to custom multi-annotator studies:
 
-### 1. Human Inter-Annotator Agreement (Table 2)
-Computes Turn-level Fleiss' $\kappa$, continuous character-level $F_1$, and Hungarian-aligned conventionality and communicative function metrics:
+### 1. Human Inter-Annotator Agreement
+Computes turn-level agreement (Fleiss' Kappa), character-level continuous span F1, and Hungarian-aligned conventionality and communicative function metrics from independent annotator exports:
+
 ```bash
 python scripts/compute_human_iaa.py \
   --files data/annotator1.json data/annotator2.json data/annotator3.json \
   --labels A1 A2 A3
 ```
 
-### 2. Adjudication Preparation & Gold Standard Compilation (§ 5.1)
+### 2. Adjudication Preparation and Gold Standard Compilation
+Generates structured conflict resolution files for human adjudication and compiles the completed decisions:
+
 ```bash
-# Step 1: Cluster spans and generate priority-ranked meeting agenda:
+# Step 1: Cluster spans across annotators and generate priority-ranked meeting agenda:
 python scripts/prepare_adjudication_sheet.py \
   --files data/annotator1.json data/annotator2.json data/annotator3.json \
   --labels A1 A2 A3 \
   --out-csv outputs/adjudication_sheet.csv \
   --out-dossier outputs/adjudication_dossier.txt
 
-# Step 2: Compile finalized adjudication sheet into Gold standard JSON & CSV:
+# Step 2: Compile adjudicated decisions into gold standard JSON and CSV formats:
 python scripts/compile_gold_standard.py \
   --sheet data/adjudication_sheet_completed.csv \
   --base-export data/annotator1.json \
@@ -138,8 +173,9 @@ python scripts/compile_gold_standard.py \
   --out-csv data/gold_standard_spans.csv
 ```
 
-### 3. Communicative Function Confusion Matrix (Table 5)
-Computes the 8×8 multi-annotator confusion matrix for non-lexicalized communicative functions and extracts illustrative case studies:
+### 3. Communicative Function Confusion Matrix
+Computes the confusion matrix across annotators for communicative functions and extracts illustrative case studies:
+
 ```bash
 python scripts/function_confusion.py \
   --ann1 data/annotator1.json \
@@ -151,6 +187,12 @@ python scripts/function_confusion.py \
 
 ---
 
-## Citation & License
-The code in this repository is released under the **MIT License**.  
-The underlying conversation data is derived from the ShareChat corpus (licensed under CC BY-NC 4.0).
+## Citation and License
+
+The code and accompanying documentation in this repository are
+released under the MIT License, except where otherwise noted.
+
+The underlying conversations originate from the ShareChat corpus.
+The source corpus's license does not by itself resolve the data-protection
+requirements for redistributing the annotated conversational data.
+The data are therefore not included in this public repository.

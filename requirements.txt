@@ -11,6 +11,6 @@ spacy>=3.5.0
 pydantic>=2.0.0
 requests>=2.28.0
 
-# Optional: Jupyter Notebook environment (for notebooks/01_corpus_filtering_and_sampling.ipynb)
+# Optional: Jupyter Notebook environment (for notebooks/corpus_filtering_and_sampling.ipynb)
 jupyter>=1.0.0
 ipykernel>=6.20.0
