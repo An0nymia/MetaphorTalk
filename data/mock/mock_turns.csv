@@ -1,0 +1,5 @@
+Conv_ID,Turn_ID,Turn_In_Conv,Speaker,Text,Has_Metaphor,Spans_Count
+gold_c001,gold_c001_1,1,USER,"I am feeling overwhelmed today, like I am just running in circles.",YES,1
+gold_c001,gold_c001_2,2,LLM,"I hear you. When life turns into an endless loop, taking a step back can help break the cycle.",YES,2
+gold_c002,gold_c002_1,1,USER,"Could you explain quantum entanglement simply?",NO,0
+gold_c002,gold_c002_2,2,LLM,"Imagine two magical coins that always land on the same face, no matter how far apart they are.",YES,1

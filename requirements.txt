@@ -1,0 +1,16 @@
+# Core scientific and tabular processing
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+scikit-learn>=1.2.0
+
+# NLP and linguistic processing
+spacy>=3.5.0
+
+# Structured outputs and HTTP API requests
+pydantic>=2.0.0
+requests>=2.28.0
+
+# Optional: Jupyter Notebook environment (for notebooks/01_corpus_filtering_and_sampling.ipynb)
+jupyter>=1.0.0
+ipykernel>=6.20.0

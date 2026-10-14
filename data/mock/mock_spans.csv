@@ -1,0 +1,5 @@
+Conv_ID,Turn_ID,Turn_Index,Speaker,Span_ID,Start,End,Span_Text,Lexicalized,Conventionality,Functions,Offset_Valid
+gold_c001,gold_c001_1,1,USER,span_0001,47,65,running in circles,True,LEXICALIZED,,YES
+gold_c001,gold_c001_2,2,LLM,span_0002,36,48,endless loop,False,CREATIVE,"Visualization; Explanation",YES
+gold_c001,gold_c001_2,2,LLM,span_0003,78,93,break the cycle,True,LEXICALIZED,,YES
+gold_c002,gold_c002_2,2,LLM,span_0004,8,25,two magical coins,False,CREATIVE,"Visualization; Explanation",YES
